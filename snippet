@@ -1,0 +1,25 @@
+public void RunStoredProc()
+        {
+            
+            try
+            {
+                string connectionString = "Dsn=EM";
+                string sql = "SELECT * from shipping";
+                OdbcConnection con = new OdbcConnection(connectionString);
+                con.Open();
+                OdbcCommand comm = new OdbcCommand(sql, con);
+                OdbcDataReader dr = comm.ExecuteReader();
+                while (dr.Read())
+                {
+                    txtID.Text = dr.GetValue(0).ToString();
+                }
+                con.Close();
+                dr.Close();
+                comm.Dispose();
+                con.Dispose();
+            }
+            finally
+            {
+
+            }
+        }
