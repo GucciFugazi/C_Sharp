@@ -1,25 +1,37 @@
-public void RunStoredProc()
+private void GoDataSP()
         {
-            
+            OdbcConnection cn;
+            OdbcCommand cmd;
+            OdbcParameter prm;
+
             try
             {
-                string connectionString = "Dsn=EM";
-                string sql = "SELECT * from shipping";
-                OdbcConnection con = new OdbcConnection(connectionString);
-                con.Open();
-                OdbcCommand comm = new OdbcCommand(sql, con);
-                OdbcDataReader dr = comm.ExecuteReader();
-                while (dr.Read())
-                {
-                    txtID.Text = dr.GetValue(0).ToString();
-                }
-                con.Close();
-                dr.Close();
-                comm.Dispose();
-                con.Dispose();
-            }
-            finally
-            {
+                cn = new OdbcConnection("Dsn=Work");
+                cmd = new OdbcCommand("{call sp_GM16 (?,?,?)}", cn);
 
+                prm = cmd.Parameters.Add("@function", OdbcType.VarChar, 25);
+                prm.Value = "ListAll";
+
+                prm = cmd.Parameters.Add("@classid", OdbcType.Int);
+                prm.Value = 1;
+
+                prm = cmd.Parameters.Add("@location", OdbcType.VarChar, 75);
+                prm.Value = "";
+
+                cn.Open();
+
+                OdbcDataAdapter dadapter = new OdbcDataAdapter();
+                dadapter.SelectCommand = cmd;
+
+                DataTable table = new DataTable();
+                dadapter.Fill(table);
+                this.dataGridView1.DataSource = table;
+
+                //Clean up.
+                cn.Close();
+            }
+            catch (OdbcException o)
+            {
+                MessageBox.Show(o.Message.ToString());
             }
         }
