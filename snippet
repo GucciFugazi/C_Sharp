@@ -1,4 +1,4 @@
-private void GoDataSP()
+private void GetEvents()
         {
             OdbcConnection cn;
             OdbcCommand cmd;
@@ -25,7 +25,14 @@ private void GoDataSP()
 
                 DataTable table = new DataTable();
                 dadapter.Fill(table);
+
+                // fill datagrid
                 this.dataGridView1.DataSource = table;
+
+                //fill drop down
+                cmbEvents.DataSource = table.DefaultView;
+                cmbEvents.DisplayMember = "Showsubclass";
+                cmbEvents.ValueMember = "Eventclassid";
 
                 //Clean up.
                 cn.Close();
